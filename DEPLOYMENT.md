@@ -97,14 +97,19 @@ This creates:
 
 The exporter is configured entirely via environment variables.
 
-| Variable         | Default         | Description                                                            |
-| :--------------- | :-------------- | :--------------------------------------------------------------------- |
-| `TOP_N`          | `50`            | Number of top processes to track per metric (CPU, Mem, Disk).          |
-| `ENABLE_DISK_IO` | `true`          | Enable/Disable Disk Read/Write metrics.                                |
-| `ENABLE_PORTS`   | `true`          | Enable/Disable listening port resolution.                              |
-| `PROCFS_PATH`    | `/proc`         | Path to the target `/proc` filesystem. Use `/host/proc` in containers. |
-| `PROC_HOSTNAME`  | `os.Hostname()` | Override the `hostname` label value.                                   |
-| `METRICS_PORT`   | `9105`          | Port to serve metrics on.                                              |
+| Variable          | Default         | Description                                                            |
+| :---------------- | :-------------- | :--------------------------------------------------------------------- |
+| `TOP_N`           | `40`            | Top processes per metric dimension. Valid range: 1-500.                 |
+| `SCRAPE_INTERVAL` | `5s`            | Collection interval (Go duration). Valid range: 1s-5m.                 |
+| `ENABLE_DISK_IO`  | `true`          | Enable/Disable Disk Read/Write metrics.                                |
+| `ENABLE_PORTS`    | `true`          | Enable/Disable listening port resolution.                              |
+| `PROCFS_PATH`     | `/proc`         | Path to the target `/proc` filesystem. Use `/host/proc` in containers. |
+| `PROC_HOSTNAME`   | `os.Hostname()` | Override the `hostname` label value.                                   |
+| `METRICS_PORT`    | `9105`          | Port to serve metrics on.                                              |
+
+**Validation**: Invalid environment variable values (e.g., `TOP_N=abc`, `TOP_N=0`, `SCRAPE_INTERVAL=10m`) will cause a startup failure with a clear error message. This prevents silent misconfiguration.
+
+**Graceful Shutdown**: Proc-Sentry honors `SIGTERM` and `SIGINT` signals. On receiving a signal, it stops the collection loop, drains in-flight HTTP requests (5s timeout), then exits cleanly. This ensures proper behavior during Kubernetes rolling updates and `docker stop`.
 
 ## 6. Prometheus Integration
 

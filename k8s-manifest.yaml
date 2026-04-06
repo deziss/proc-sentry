@@ -26,7 +26,9 @@ spec:
             - name: PROCFS_PATH
               value: "/host/proc"
             - name: TOP_N
-              value: "50"
+              value: "40"
+            - name: SCRAPE_INTERVAL
+              value: "5s"
             - name: ENABLE_DISK_IO
               value: "true"
             - name: ENABLE_PORTS

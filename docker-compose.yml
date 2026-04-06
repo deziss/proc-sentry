@@ -18,7 +18,8 @@ services:
     environment:
       - PROC_HOSTNAME=${HOSTNAME:-my-host}
       - PROCFS_PATH=/host/proc
-      - TOP_N=${proc_top_n:-50}
+      - TOP_N=${proc_top_n:-40}
+      - SCRAPE_INTERVAL=${proc_scrape_interval:-5s}
       - ENABLE_DISK_IO=${proc_enable_disk_io:-true}
       - ENABLE_PORTS=${proc_enable_ports:-false}
     read_only: true
